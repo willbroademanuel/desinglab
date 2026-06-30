@@ -60,30 +60,17 @@ export default function Loading() {
       {/* Sleek glassmorphic floating container with curved edges */}
       <div className="px-8 py-5 bg-onyx/90 border border-onyx-border/40 dark:border-white/10 rounded-2xl shadow-[0_15px_45px_rgba(0,0,0,0.08)] dark:shadow-[0_15px_45px_rgba(0,0,0,0.65)] flex flex-col items-center gap-3 w-44 animate-in scale-in duration-200">
         
-        {/* Organic 3-Dot scaling wave animation container */}
-        <div className="flex gap-2.5 items-center justify-center py-2.5">
-          <div className="w-3.5 h-3.5 bg-gradient-to-r from-primary-gold to-[#F2D272] rounded-full organic-dot organic-dot-1 shadow-[0_0_12px_rgba(212,175,55,0.45)]" />
-          <div className="w-3.5 h-3.5 bg-gradient-to-r from-primary-gold to-[#F2D272] rounded-full organic-dot organic-dot-2 shadow-[0_0_12px_rgba(212,175,55,0.45)]" />
-          <div className="w-3.5 h-3.5 bg-gradient-to-r from-primary-gold to-[#F2D272] rounded-full organic-dot organic-dot-3 shadow-[0_0_12px_rgba(212,175,55,0.45)]" />
+        <div className="flex items-center justify-center py-5">
+          <div className="loader" />
         </div>
 
         {/* Subtitle context */}
-        <span className="text-[9px] font-bold text-text-secondary uppercase tracking-widest animate-pulse">
+        <span className="text-[9px] font-bold text-[color:var(--text-secondary)] uppercase tracking-widest animate-pulse">
           Loading...
         </span>
       </div>
 
       <style>{`
-        @keyframes organic-scale {
-          0%, 100% {
-            transform: scale(0.6);
-            opacity: 0.3;
-          }
-          50% {
-            transform: scale(1.25);
-            opacity: 1;
-          }
-        }
         @keyframes fade-out-exit {
           from {
             opacity: 1;
@@ -106,23 +93,40 @@ export default function Loading() {
             opacity: 0;
           }
         }
-        .organic-dot {
-          animation: organic-scale 1.1s ease-in-out infinite;
-        }
-        .organic-dot-1 {
-          animation-delay: 0s;
-        }
-        .organic-dot-2 {
-          animation-delay: 0.16s;
-        }
-        .organic-dot-3 {
-          animation-delay: 0.32s;
-        }
         .loading-exit-backdrop {
           animation: fade-out-exit 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
         }
         .loading-exit-container {
           animation: scale-out-exit 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+        }
+        
+        /* New Custom Loader */
+        .loader {
+          width: 15px;
+          aspect-ratio: 1;
+          position: relative;
+        }
+        .loader::before,
+        .loader::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          background: #D4AF37; /* Using primary gold */
+        }
+        .loader::before {
+          box-shadow: -25px 0 #D4AF37;
+          animation: l8-1 1s infinite linear;
+        }
+        .loader::after {
+          transform: rotate(0deg) translateX(25px);
+          animation: l8-2 1s infinite linear;
+        }
+        @keyframes l8-1 {
+            100% { transform: translateX(25px) }
+        }
+        @keyframes l8-2 {
+            100% { transform: rotate(-180deg) translateX(25px) }
         }
       `}</style>
     </div>
