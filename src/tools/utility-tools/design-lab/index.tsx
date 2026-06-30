@@ -84,7 +84,16 @@ export default function DesignLab({ userProfile }: DesignLabProps = {}) {
   if (!state.isInitialized) {
     return (
       <div className="flex flex-col flex-1 h-full min-h-[60vh] w-full relative items-center justify-center">
-        <div className="loader"></div>
+        {/* Sleek glassmorphic floating container with curved edges */}
+        <div className="px-8 py-5 bg-onyx/90 border border-onyx-border/40 dark:border-white/10 rounded-2xl shadow-[0_15px_45px_rgba(0,0,0,0.08)] dark:shadow-[0_15px_45px_rgba(0,0,0,0.65)] flex flex-col items-center gap-3 w-44 animate-in scale-in duration-200">
+          <div className="flex items-center justify-center py-5">
+            <div className="loader" />
+          </div>
+          {/* Subtitle context */}
+          <span className="text-[9px] font-bold text-[color:var(--text-secondary)] uppercase tracking-widest animate-pulse">
+            Loading...
+          </span>
+        </div>
       </div>
     );
   }
