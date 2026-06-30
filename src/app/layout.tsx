@@ -11,11 +11,6 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "DesignLab AI | WatuLab",
   description: "DesignLab AI — Premium AI image transformation platform",
-  icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-    ],
-  },
 };
 
 export const viewport: Viewport = {
