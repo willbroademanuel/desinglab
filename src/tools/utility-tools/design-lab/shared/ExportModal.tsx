@@ -80,6 +80,8 @@ export default function ExportModal({ state, canvasRef, onClose }: ExportModalPr
         sliceCanvas.height = sliceH * scale;
         const sCtx = sliceCanvas.getContext('2d');
         if (!sCtx) throw new Error('Cannot get 2d context for slice');
+        sCtx.imageSmoothingEnabled = true;
+        sCtx.imageSmoothingQuality = 'high';
 
         let sliceIndex = 1;
         for (let y = 0; y < rows; y++) {

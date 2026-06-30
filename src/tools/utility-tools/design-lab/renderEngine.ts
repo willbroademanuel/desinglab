@@ -26,6 +26,8 @@ export function renderProject(
 ): void {
   const { canvasWidth: w, canvasHeight: h } = project;
 
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
   ctx.clearRect(0, 0, w, h);
 
   // ── Background ──
@@ -715,6 +717,8 @@ export function renderForExport(
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
   ctx.scale(scale, scale);
 
   const hitBoxes: Record<string, HitBox> = {};

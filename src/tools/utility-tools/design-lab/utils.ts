@@ -249,7 +249,8 @@ export async function resizeImageFileIfNeeded(file: File): Promise<File> {
         resolve(file); // fallback
         return;
       }
-      
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(img, 0, 0, width, height);
       canvas.toBlob((blob) => {
         if (!blob) {
