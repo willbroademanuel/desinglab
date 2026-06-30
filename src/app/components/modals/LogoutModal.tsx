@@ -53,15 +53,12 @@ export default function LogoutModal() {
   return (
     <ModalWrapper backdropClass="bg-black/80 backdrop-blur-sm">
       {(onClose) => (
-        <div className="relative w-full max-w-sm bg-onyx border border-red-500/20 rounded-3xl shadow-[0_40px_100px_rgba(0,0,0,0.8),0_0_40px_rgba(239,68,68,0.1)] overflow-hidden">
-          
-          {/* Top red warning bar */}
-          <div className="h-1.5 w-full bg-gradient-to-r from-red-600 to-red-400" />
+        <div className="relative w-full max-w-sm bg-[color:var(--surface-1)] border border-[color:var(--border-subtle)] rounded-3xl shadow-2xl overflow-hidden">
           
           <button
             onClick={onClose}
             aria-label="Close"
-            className="absolute top-4 right-4 p-1.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/10 transition-colors z-10"
+            className="absolute top-4 right-4 p-1.5 rounded-xl text-[color:var(--text-tertiary)] hover:text-[color:var(--text-primary)] hover:bg-[color:var(--surface-2)] transition-colors z-10"
           >
             <X className="w-5 h-5" />
           </button>
@@ -78,8 +75,8 @@ export default function LogoutModal() {
             </motion.div>
 
             <div>
-              <h2 className="text-xl font-bold text-white mb-2">{t('modals.logoutTitle')}</h2>
-              <p className="text-[13px] text-gray-400 leading-relaxed max-w-[240px]">
+              <h2 className="text-xl font-bold text-[color:var(--text-primary)] mb-2">{t('modals.logoutTitle')}</h2>
+              <p className="text-[13px] text-[color:var(--text-secondary)] leading-relaxed max-w-[240px]">
                 {t('modals.logoutDesc')}
               </p>
             </div>

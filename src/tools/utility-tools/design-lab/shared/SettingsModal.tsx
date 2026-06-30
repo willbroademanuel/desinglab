@@ -102,6 +102,7 @@ export default function SettingsModal({ isOpen, onClose, userProfile }: Settings
         <div className="p-4">
           <Link
             href="/m/logout"
+            onClick={onClose}
             className="flex items-center justify-center gap-2 w-full py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl font-bold transition-colors border border-red-500/20"
           >
             <LogOut className="w-4 h-4" />
