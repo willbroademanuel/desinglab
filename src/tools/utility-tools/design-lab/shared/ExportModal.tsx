@@ -56,29 +56,7 @@ export default function ExportModal({ state, canvasRef, onClose }: ExportModalPr
   const handleExport = useCallback(async () => {
     setExporting(true);
     try {
-      // --- SENIOR ENGINEER PROTECTION: Credit Deduction & Idempotency ---
-      // We must deduct credits BEFORE we do the expensive rendering and download
-      const { createClient } = await import('@/lib/supabase');
-      const supabase = createClient();
-      
-      const featureSlug = exportAsSlices ? 'design-lab-slice-export' : 'design-lab-export';
-      const cost = exportAsSlices ? 2 : 1; // Propose 2 credits for sliced export, 1 for single
-      
-      const { error: chargeError } = await supabase.rpc('charge_credits', {
-        p_app_slug: process.env.NEXT_PUBLIC_APP_SLUG || 'leornardo',
-        p_feature_slug: featureSlug,
-        p_amount: cost,
-        p_idempotency_key: `export_${Date.now()}_${Math.random().toString(36).substring(7)}`
-      });
-
-      if (chargeError) {
-        throw new Error(
-          chargeError.message.includes('Insufficient') 
-            ? 'Insufficient credits. Please top up your wallet.' 
-            : 'Failed to authorize export. Please try again later.'
-        );
-      }
-      // ----------------------------------------------------------------
+      // Temporarily disabled credit deduction for exports. All exports are free for now.
 
       const { imgMap, bgImg } = getImageCache();
       const mime = getMimeType(format);
