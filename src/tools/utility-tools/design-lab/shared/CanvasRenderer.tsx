@@ -193,6 +193,8 @@ export default function CanvasRenderer({ state, canvasRef: propCanvasRef, zoom, 
       state.alignGuides,
       zoom,
       hoveredIdRef.current,
+      false, // isExport
+      state.triggerFontReload, // onFontLoaded — triggers re-render when async font finishes loading
     );
 
     ctx.restore();
@@ -203,7 +205,7 @@ export default function CanvasRenderer({ state, canvasRef: propCanvasRef, zoom, 
         setTick(t => t + 1); // Force React to re-render the overlay immediately
       }
     }
-  }, [state, zoom]);
+  }, [state, zoom]); // state.fontLoadVersion causes re-render when any async font is loaded
 
   // ── Asset loading ──
   const loadAssets = useCallback(async () => {
@@ -260,10 +262,10 @@ export default function CanvasRenderer({ state, canvasRef: propCanvasRef, zoom, 
     if (state.isInitialized) loadAssets();
   }, [state.project, state.isInitialized, loadAssets]);
 
-  // Re-render on selection/guide changes
+  // Re-render on selection/guide/font changes
   useEffect(() => {
     requestAnimationFrame(render);
-  }, [state.activeLayerId, state.editingLayerId, state.alignGuides, render]);
+  }, [state.activeLayerId, state.editingLayerId, state.alignGuides, state.fontLoadVersion, render]);
 
   // Cleanup on unmount
   useEffect(() => {

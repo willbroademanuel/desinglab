@@ -14,6 +14,7 @@ import { GlobalCropModal } from '@tools/shared/components/GlobalCropModal';
 import { FONT_LIST, FILL_COLORS, BG_SOLID_COLORS, BG_GRADIENTS } from '../constants';
 import { loadGoogleFont } from '../utils';
 import PropertyPanel from '../shared/PropertyPanel';
+import FontPicker from '../shared/FontPicker';
 import LayerPanel from '../shared/LayerPanel';
 import AssetBrowser from '../shared/AssetBrowser';
 import UniversalEditPanel from '../shared/UniversalEditPanel';
@@ -335,31 +336,49 @@ export default function MobileSidebar({ state, onBgRemoval }: MobileSidebarProps
                   {state.activeLayer ? (
                     <>
                       {state.activeLayer.type === 'text' && (
-                        <div className={`space-y-2 transition-opacity duration-300 ${activeSlider ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                          <h4 className="text-[10px] font-bold uppercase tracking-wider text-[color:var(--text-secondary)]">{t('designLab.fontFamily') || 'Font Family'}</h4>
-                          <input
-                            type="text"
-                            placeholder={t('designLab.searchFonts') || "Search fonts..."}
-                            value={fontSearch}
-                            onChange={e => setFontSearch(e.target.value)}
-                            className="w-full bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] rounded-xl px-3 py-2.5 text-xs outline-none focus:border-primary-gold transition-colors"
-                          />
-                          <div className="max-h-[200px] overflow-y-auto space-y-0.5 border border-[color:var(--border-subtle)] rounded-xl">
-                            {filteredFonts.map(f => {
-                              loadGoogleFont(f.name);
-                              const isActive = (state.activeLayer as any)?.fontFamily === f.name;
-                              return (
-                                <button
-                                  key={f.name}
-                                  onClick={() => state.updateLayer(state.activeLayer!.id, { fontFamily: f.name } as any)}
-                                  className={`w-full text-left px-3 py-2.5 text-sm transition-colors ${isActive ? 'bg-primary-gold/10 text-primary-gold' : 'text-[color:var(--text-secondary)] active:bg-[color:var(--surface-2)]'}`}
-                                  style={{ fontFamily: `"${f.name}", sans-serif` }}
-                                >
-                                  {f.name}
-                                  <span className="text-[9px] ml-2 opacity-50">{f.category}</span>
-                                </button>
-                              );
-                            })}
+                        <div className={`space-y-3 transition-opacity duration-300 ${activeSlider ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                          {/* Style preset quick-add buttons */}
+                          <div className="grid grid-cols-2 gap-1.5">
+                            <button
+                              onClick={() => { state.addHeadingLayer(); autoCloseOnMobile(); }}
+                              className="flex flex-col items-start gap-0.5 px-3 py-2 bg-[color:var(--surface-1)] border border-[color:var(--border-subtle)] hover:border-primary-gold rounded-xl transition-all active:scale-95"
+                            >
+                              <span className="text-sm font-black text-[color:var(--text-primary)] leading-none">Heading</span>
+                              <span className="text-[9px] text-[color:var(--text-tertiary)]">Montserrat · 800</span>
+                            </button>
+                            <button
+                              onClick={() => { state.addSubheadingLayer(); autoCloseOnMobile(); }}
+                              className="flex flex-col items-start gap-0.5 px-3 py-2 bg-[color:var(--surface-1)] border border-[color:var(--border-subtle)] hover:border-primary-gold rounded-xl transition-all active:scale-95"
+                            >
+                              <span className="text-xs font-semibold text-[color:var(--text-primary)] leading-none">Subheading</span>
+                              <span className="text-[9px] text-[color:var(--text-tertiary)]">Poppins · 600</span>
+                            </button>
+                            <button
+                              onClick={() => { state.addBodyTextLayer(); autoCloseOnMobile(); }}
+                              className="flex flex-col items-start gap-0.5 px-3 py-2 bg-[color:var(--surface-1)] border border-[color:var(--border-subtle)] hover:border-primary-gold rounded-xl transition-all active:scale-95"
+                            >
+                              <span className="text-[10px] font-normal text-[color:var(--text-primary)] leading-none">Body text</span>
+                              <span className="text-[9px] text-[color:var(--text-tertiary)]">Inter · 400</span>
+                            </button>
+                            <button
+                              onClick={() => { state.addCaptionLayer(); autoCloseOnMobile(); }}
+                              className="flex flex-col items-start gap-0.5 px-3 py-2 bg-[color:var(--surface-1)] border border-[color:var(--border-subtle)] hover:border-primary-gold rounded-xl transition-all active:scale-95"
+                            >
+                              <span className="text-[9px] font-light tracking-widest text-[color:var(--text-primary)] leading-none uppercase">CAPTION</span>
+                              <span className="text-[9px] text-[color:var(--text-tertiary)]">Inter · 300</span>
+                            </button>
+                          </div>
+
+                          {/* Font family picker */}
+                          <div>
+                            <h4 className="text-[10px] font-bold uppercase tracking-wider text-[color:var(--text-secondary)] mb-2">{t('designLab.fontFamily') || 'Font Family'}</h4>
+                            <FontPicker
+                              currentFont={(state.activeLayer as any).fontFamily || 'Inter'}
+                              currentWeight={(state.activeLayer as any).fontWeight ?? 400}
+                              onFontChange={(fontName) => state.updateLayer(state.activeLayer!.id, { fontFamily: fontName } as any)}
+                              onWeightChange={(weight) => state.updateLayer(state.activeLayer!.id, { fontWeight: weight, isBold: weight >= 700 } as any)}
+                              maxHeight={180}
+                            />
                           </div>
                         </div>
                       )}

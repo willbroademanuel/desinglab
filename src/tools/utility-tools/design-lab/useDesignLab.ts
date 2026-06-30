@@ -12,13 +12,13 @@ import type {
 } from './types';
 import {
   createEmptyProject, createTextLayer, createImageLayer,
-  createShapeLayer,
+  createShapeLayer, migrateTextLayer,
 } from './types';
 import { generateLayerId, resizeImageFileIfNeeded } from './utils';
 import { getItem, setItem, removeItem } from '@/lib/indexeddb/workspace-db';
 import {
   MAX_HISTORY_SIZE, DB_PERSIST_DEBOUNCE_MS,
-  DB_KEY_PROJECT, DB_KEY_LEGACY,
+  DB_KEY_PROJECT, DB_KEY_LEGACY, TEXT_STYLE_PRESETS,
 } from './constants';
 import { removeBackground as imglyRemoveBackground } from '@imgly/background-removal';
 import { parseError } from '@/lib/utils/errorParser';
@@ -105,6 +105,14 @@ export interface DesignLabState {
 
   // Layer CRUD
   addTextLayer: () => void;
+  /** Add a heading-style text layer using the Heading preset */
+  addHeadingLayer: () => void;
+  /** Add a subheading-style text layer */
+  addSubheadingLayer: () => void;
+  /** Add a body-style text layer */
+  addBodyTextLayer: () => void;
+  /** Add a caption-style text layer */
+  addCaptionLayer: () => void;
   addImageLayer: (file: File) => void;
   addShapeLayer: (kind: ShapeKind) => void;
   updateLayer: (id: string, updates: Partial<Layer>, saveHistory?: boolean) => void;
@@ -119,6 +127,10 @@ export interface DesignLabState {
   groupSelection: () => void;
   ungroupSelection: () => void;
   updateSelectedLayers: (updates: Partial<Layer>) => void;
+
+  // Font reload trigger (incremented when an async font finishes loading)
+  fontLoadVersion: number;
+  triggerFontReload: () => void;
 
   // Selection
   setActiveLayerId: (id: string | null) => void;
@@ -171,6 +183,13 @@ export function useDesignLab(): DesignLabState {
 
   // Alignment guides
   const [alignGuides, setAlignGuides] = useState<AlignGuide[]>([]);
+
+  // Font load version — incremented when an async font finishes loading.
+  // CanvasRenderer watches this to know when to re-render the canvas.
+  const [fontLoadVersion, setFontLoadVersion] = useState(0);
+  const triggerFontReload = useCallback(() => {
+    setFontLoadVersion(v => v + 1);
+  }, []);
 
   // Refs for synchronous access in canvas rendering
   const projectRef = useRef<Project>(project);
@@ -296,7 +315,16 @@ export function useDesignLab(): DesignLabState {
         }
         if (mounted) {
           if (saved && (saved.layers?.length > 0 || saved.bgImageFile || saved.bgType !== 'solid')) {
-            setProject(saved);
+            // ── Backward-Compatible Migration ──
+            // Ensure all TextLayers have the new enterprise fields populated.
+            // This runs once on load and is non-destructive — only adds missing fields.
+            const migratedLayers = saved.layers.map(layer => {
+              if (layer.type === 'text') {
+                return migrateTextLayer(layer as any);
+              }
+              return layer;
+            });
+            setProject({ ...saved, layers: migratedLayers });
             setHasProject(true);
           }
         }
@@ -374,6 +402,33 @@ export function useDesignLab(): DesignLabState {
     setEditingLayerId(id);
     setToolMode('select');
   }, [updateProject, setActiveLayerId, setEditingLayerId]);
+
+  /** Helper: create a text layer from a named preset and add it to the canvas. */
+  const addTextLayerFromPreset = useCallback((presetLabel: string) => {
+    const preset = TEXT_STYLE_PRESETS.find(p => p.label === presetLabel);
+    if (!preset) return;
+    const id = generateLayerId('text');
+    const { canvasWidth: cw, canvasHeight: ch } = projectRef.current;
+    const layer = createTextLayer(id, cw, ch, {
+      text: preset.label,
+      name: `${preset.label} Text`,
+      fontSize: Math.round(ch * preset.fontSizeRatio),
+      fontWeight: preset.fontWeight as any,
+      isBold: preset.fontWeight >= 700,
+      fontFamily: preset.fontFamily,
+      letterSpacing: preset.letterSpacing,
+      textTransform: preset.textTransform,
+    });
+    updateProject(p => ({ ...p, layers: [...p.layers, layer] }));
+    setActiveLayerId(id);
+    setEditingLayerId(id);
+    setToolMode('select');
+  }, [updateProject, setActiveLayerId, setEditingLayerId]);
+
+  const addHeadingLayer    = useCallback(() => addTextLayerFromPreset('Heading'),    [addTextLayerFromPreset]);
+  const addSubheadingLayer = useCallback(() => addTextLayerFromPreset('Subheading'), [addTextLayerFromPreset]);
+  const addBodyTextLayer   = useCallback(() => addTextLayerFromPreset('Body'),       [addTextLayerFromPreset]);
+  const addCaptionLayer    = useCallback(() => addTextLayerFromPreset('Caption'),    [addTextLayerFromPreset]);
 
   const addImageLayer = useCallback(async (file: File) => {
     const resizedFile = await resizeImageFileIfNeeded(file);
@@ -719,6 +774,10 @@ export function useDesignLab(): DesignLabState {
     updateProjectBg,
     setSliceGrid,
     addTextLayer,
+    addHeadingLayer,
+    addSubheadingLayer,
+    addBodyTextLayer,
+    addCaptionLayer,
     addImageLayer,
     addShapeLayer,
     updateLayer,
@@ -746,5 +805,7 @@ export function useDesignLab(): DesignLabState {
     toggleSelection,
     bgRemovalState,
     removeBackground,
+    fontLoadVersion,
+    triggerFontReload,
   };
 }

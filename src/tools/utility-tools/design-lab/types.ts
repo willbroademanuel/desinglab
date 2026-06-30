@@ -17,6 +17,62 @@ export type ToolMode = 'select' | 'text' | 'shape' | 'pan';
 export type ExportFormat = 'png' | 'jpg' | 'webp';
 export type SidebarTab = 'elements' | 'text' | 'images' | 'background' | 'layers' | 'assets' | 'edit';
 
+// ===== Text Typography Types =====
+
+/** Text fill mode — solid colour, linear gradient, or full-spectrum rainbow */
+export type TextFillType = 'solid' | 'gradient' | 'rainbow';
+
+/**
+ * Curve path shape.
+ * 'arc'   — single circular arc (shipped in this release)
+ * 'wave'  — sine-wave path (stubbed for future release)
+ * 'arch'  — parabolic arch (stubbed for future release)
+ */
+export type TextCurveType = 'arc' | 'wave' | 'arch';
+
+/** CSS text-transform equivalent */
+export type TextTransform = 'none' | 'uppercase' | 'lowercase' | 'capitalize';
+
+/** Text decoration (manually drawn on canvas) */
+export type TextDecoration = 'none' | 'underline' | 'line-through';
+
+/**
+ * CSS numeric font-weight values.
+ * Note: not all weights are available for every Google Font.
+ * Check FONT_LIST[x].weights for a font's supported weights.
+ */
+export type FontWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+
+// ===== Text Sub-structures =====
+
+/** Text highlight / background box rendered behind text */
+export interface TextBackgroundBox {
+  enabled: boolean;
+  color: string;        // CSS color, supports rgba. Default 'rgba(0,0,0,0.5)'
+  padding: number;      // Extra padding around each line's bounding box (px). Default 8
+  cornerRadius: number; // Rounded corners radius. Default 4
+}
+
+/** Neon glow effect rendered via multi-pass shadowBlur */
+export interface TextNeonGlow {
+  enabled: boolean;
+  color: string;     // Glow colour. Default '#00ffff'
+  intensity: number; // Controls shadowBlur spread (0–30). Default 8
+}
+
+export const DEFAULT_TEXT_BACKGROUND_BOX: TextBackgroundBox = {
+  enabled: false,
+  color: 'rgba(0,0,0,0.5)',
+  padding: 8,
+  cornerRadius: 4,
+};
+
+export const DEFAULT_TEXT_NEON_GLOW: TextNeonGlow = {
+  enabled: false,
+  color: '#00ffff',
+  intensity: 8,
+};
+
 // ===== Layer Filters (per-layer image adjustments) =====
 
 export interface LayerFilters {
@@ -63,22 +119,61 @@ export interface GroupLayer extends BaseLayer {
   height: number;
 }
 
-// ===== Text Layer =====
+// ===== Text Layer — Enterprise Edition =====
 
 export interface TextLayer extends BaseLayer {
   type: 'text';
   text: string;
-  fontSize: number;     // absolute px
+  fontSize: number;         // absolute px
   fontFamily: string;
-  color: string;
+
+  // ── Core fill ──
+  color: string;            // Solid fill colour (used when fillType === 'solid')
   strokeColor: string;
   strokeWidth: number;
+
+  // ── Typography ──
+  /** isBold is kept for backward-compat. fontWeight takes precedence in the renderer.
+   *  Migration: isBold=true → fontWeight=700. */
   isBold: boolean;
   isItalic: boolean;
   textAlign: TextAlign;
-  letterSpacing: number;  // px, 0 = normal
-  lineHeight: number;     // multiplier, 1.2 = normal
-  width?: number;         // explicitly defined width for smart wrapping
+  letterSpacing: number;    // px, 0 = normal
+  lineHeight: number;       // multiplier, 1.2 = normal
+  width?: number;           // explicitly defined width for smart wrapping
+
+  // ── NEW: Extended typography ──
+  /** Numeric font weight (100–900). Default: 400 (regular). Replaces isBold semantics. */
+  fontWeight: FontWeight;
+  textTransform: TextTransform;    // Default: 'none'
+  textDecoration: TextDecoration;  // Default: 'none'
+  /** Internal text box padding (px). Default: 12. Replaces the hardcoded TEXT_PADDING constant. */
+  padding: number;
+
+  // ── NEW: Fill ──
+  /** How to fill the text glyphs. Default: 'solid' (uses `color` field). */
+  fillType: TextFillType;
+  /** Gradient start/end colours. Used when fillType === 'gradient' or 'rainbow'. */
+  gradientColors: [string, string];
+  /** Gradient angle in degrees. Default: 135. */
+  gradientAngle: number;
+
+  // ── NEW: Effects ──
+  /** Background highlight rectangle drawn behind the text. null = disabled. */
+  backgroundBox: TextBackgroundBox | null;
+  /** Neon glow effect. null = disabled. */
+  neonGlow: TextNeonGlow | null;
+
+  // ── NEW: Curve ──
+  /**
+   * Curve amount in degrees (-360 to 360).
+   * 0 = straight (fast-path, no curve calculation).
+   * Positive = arc curves upward (text on top of circle).
+   * Negative = arc curves downward (text on bottom of circle).
+   */
+  curveAmount: number;
+  /** Shape of the curve path. Default: 'arc'. */
+  curveType: TextCurveType;
 }
 
 // ===== Image Layer =====
@@ -127,13 +222,6 @@ export interface ShapeLayer extends BaseLayer {
   cornerRadius: number;   // for rectangle
   starPoints: number;     // for star shape
   starInnerRadius: number; // 0–1, for star
-}
-
-// ===== Group Layer =====
-
-export interface GroupLayer extends BaseLayer {
-  type: 'group';
-  layers: Layer[];
 }
 
 export type Layer = TextLayer | ImageLayer | ShapeLayer | GroupLayer;
@@ -215,7 +303,16 @@ export function createEmptyProject(w = 1080, h = 1080): Project {
   };
 }
 
-export function createTextLayer(id: string, canvasW: number, canvasH: number): TextLayer {
+/**
+ * Creates a new TextLayer with all enterprise defaults.
+ * All new fields are explicitly set so the canvas never encounters undefined.
+ */
+export function createTextLayer(
+  id: string,
+  canvasW: number,
+  canvasH: number,
+  overrides: Partial<Omit<TextLayer, 'id' | 'type'>> = {}
+): TextLayer {
   return {
     id,
     type: 'text',
@@ -233,14 +330,33 @@ export function createTextLayer(id: string, canvasW: number, canvasH: number): T
     text: 'Double click to edit',
     fontSize: Math.round(canvasH * 0.06),
     fontFamily: 'Inter',
+    // Core fill
     color: '#000000',
     strokeColor: '#FFFFFF',
     strokeWidth: 0,
-    isBold: true,
+    // Typography
+    isBold: false,
     isItalic: false,
     textAlign: 'center',
     letterSpacing: 0,
     lineHeight: 1.2,
+    // Extended typography
+    fontWeight: 700,
+    textTransform: 'none',
+    textDecoration: 'none',
+    padding: 12,
+    // Fill
+    fillType: 'solid',
+    gradientColors: ['#FF512F', '#DD2476'],
+    gradientAngle: 135,
+    // Effects
+    backgroundBox: null,
+    neonGlow: null,
+    // Curve
+    curveAmount: 0,
+    curveType: 'arc',
+    // Apply caller overrides last
+    ...overrides,
   };
 }
 
@@ -319,5 +435,34 @@ export function createGroupLayer(id: string, layers: Layer[]): GroupLayer {
     flipH: false,
     flipV: false,
     layers,
+  };
+}
+
+// ===== Backward-Compatible Migration =====
+
+/**
+ * Ensures a TextLayer loaded from IndexedDB (saved before the enterprise update)
+ * has all required new fields. Call this when loading any project from storage.
+ * Returns the layer with all new fields populated from defaults — safe to call
+ * even if the layer already has all fields (pure function, no mutation).
+ */
+export function migrateTextLayer(raw: Partial<TextLayer> & Pick<TextLayer, 'id' | 'type'>): TextLayer {
+  const base = createTextLayer(raw.id, 1080, 1080); // defaults from factory
+  return {
+    ...base,
+    ...raw,
+    // Explicit migration: isBold=true → fontWeight=700 (if fontWeight not already set)
+    fontWeight: raw.fontWeight ?? (raw.isBold ? 700 : 400),
+    // Ensure all new fields have safe values even if raw has partial data
+    textTransform: raw.textTransform ?? 'none',
+    textDecoration: raw.textDecoration ?? 'none',
+    padding: raw.padding ?? 12,
+    fillType: raw.fillType ?? 'solid',
+    gradientColors: raw.gradientColors ?? ['#FF512F', '#DD2476'],
+    gradientAngle: raw.gradientAngle ?? 135,
+    backgroundBox: raw.backgroundBox ?? null,
+    neonGlow: raw.neonGlow ?? null,
+    curveAmount: raw.curveAmount ?? 0,
+    curveType: raw.curveType ?? 'arc',
   };
 }

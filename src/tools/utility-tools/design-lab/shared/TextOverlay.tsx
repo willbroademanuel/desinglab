@@ -1,8 +1,11 @@
 'use client';
 
 // ==============================================================================
-// DESIGNLAB — Inline Text Editor Overlay (Canva-style)
-// Rendered over the canvas when a text layer is being edited
+// DESIGNLAB — Inline Text Editor Overlay (Enterprise Edition)
+// Rendered over the canvas when a text layer is being edited.
+// Mirrors all new text properties: fontWeight, textTransform, textDecoration, padding.
+// IMPORTANT: Curved text (curveAmount !== 0) cannot be edited inline — the overlay
+// is suppressed and a notification is shown instead.
 // ==============================================================================
 
 import React, { useRef, useEffect } from 'react';
@@ -32,20 +35,19 @@ export default function TextOverlay({ state, canvasEl }: TextOverlayProps) {
 
   const textLayer = layer?.type === 'text' ? (layer as TextLayer) : null;
   const canvas = canvasEl;
+
   // SAFE DEFAULT: Protect against division by zero if canvasWidth is somehow 0 or missing
   const canvasWidth = state.projectRef.current?.canvasWidth || 1080;
   const cssScale = (canvas && canvasWidth > 0) ? canvas.clientWidth / canvasWidth : 1;
 
-  // Auto-expand textarea height instantaneously as user types to prevent cropping
+  // Auto-expand textarea height instantaneously as user types
   useEffect(() => {
     const el = textAreaRef.current;
     if (el) {
-      el.style.height = '0px'; // Reset first to get correct scrollHeight if it shrinks
-      el.style.height = `${el.scrollHeight}px`; 
+      el.style.height = '0px';
+      el.style.height = `${el.scrollHeight}px`;
 
-      // FIX: Force width expansion for auto-width text to bypass browser containment caps.
-      // Browsers often cap 'max-content' on absolute textareas to the containing block (canvas size),
-      // causing text to visually clip at the canvas edge. This explicit pixel sizing fixes it.
+      // FIX: Force width expansion for auto-width text
       if (!textLayer?.width) {
         el.style.width = '0px';
         el.style.width = `${el.scrollWidth}px`;
@@ -55,27 +57,85 @@ export default function TextOverlay({ state, canvasEl }: TextOverlayProps) {
 
   if (!state.editingLayerId || !layer || layer.type !== 'text' || !canvas) return null;
 
-  const hitBox = state.hitBoxes.current[layer.id];
   const activeTextLayer = textLayer as TextLayer;
-  
-  // SAFE DEFAULT: Provide fallback values in case text layer metrics are corrupted
-  const fontSize = activeTextLayer.fontSize || 20;
-  const lineHeight = activeTextLayer.lineHeight || 1.2;
+  const curveAmount = activeTextLayer.curveAmount ?? 0;
+
+  // ── Curved text cannot be edited inline ──
+  // Clicking a curved text layer opens editing mode but shows a flat notification
+  // instead of the textarea, since we cannot curve a <textarea> element.
+  if (curveAmount !== 0) {
+    const hitBox = state.hitBoxes.current[activeTextLayer.id];
+    if (!hitBox) return null;
+
+    const centerX = (activeTextLayer.x * cssScale);
+    const centerY = (activeTextLayer.y * cssScale);
+
+    return (
+      <div className="absolute overflow-visible pointer-events-none z-50" style={{ left: 0, top: 0, width: '100%', height: '100%' }}>
+        <div
+          className="absolute pointer-events-auto bg-[color:var(--surface-1)] border border-primary-gold/50 rounded-xl px-4 py-3 shadow-lg animate-in fade-in zoom-in-95 duration-150"
+          style={{
+            left: `${centerX}px`,
+            top: `${centerY}px`,
+            transform: 'translate(-50%, -120%)',
+            zIndex: 50,
+          }}
+          onPointerDown={e => e.stopPropagation()}
+        >
+          <p className="text-xs font-semibold text-[color:var(--text-primary)] mb-1">Curved Text</p>
+          <p className="text-[10px] text-[color:var(--text-tertiary)] max-w-[200px]">
+            Set Curve to 0° in Properties to edit inline, or double-click to type here.
+          </p>
+          {/* Inline edit fallback textarea (straight mode) */}
+          <textarea
+            className="mt-2 w-full min-h-[50px] bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] rounded-lg p-2 text-xs text-[color:var(--text-primary)] resize-none outline-none focus:border-primary-gold"
+            value={activeTextLayer.text}
+            onChange={e => {
+              try {
+                state.updateLayer(layer.id, { text: e.target.value } as any, false);
+              } catch (err) {
+                console.error('[DesignLab] Failed to update curved text layer:', err);
+              }
+            }}
+            onBlur={() => {
+              state.setEditingLayerId(null);
+              state.pushHistory();
+            }}
+            onKeyDown={e => {
+              if (e.key === 'Escape') {
+                e.preventDefault();
+                state.setEditingLayerId(null);
+                state.pushHistory();
+              }
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // ── Standard inline textarea for straight text ──
+
+  const fontSize    = activeTextLayer.fontSize || 20;
+  const lineHeight  = activeTextLayer.lineHeight || 1.2;
   const textContent = activeTextLayer.text || '';
-  
-  const lineCount = textContent.split('\n').length;
+  const lineCount   = textContent.split('\n').length;
   const fallbackHeight = lineCount * fontSize * lineHeight * cssScale;
 
-  const EXTRA_PADDING = 12; // FIX: Extra padding to prevent italic or stroked text from cropping at the edges
+  // Safe defaults for new fields
+  const fontWeight    = activeTextLayer.fontWeight ?? (activeTextLayer.isBold ? 700 : 400);
+  const textTransform = activeTextLayer.textTransform ?? 'none';
+  const textDecoration = activeTextLayer.textDecoration ?? 'none';
+  const padding       = activeTextLayer.padding ?? 12;
+
+  const EXTRA_PADDING = Math.max(padding, 12) * cssScale; // Scale padding with zoom
 
   return (
-    // FIX: Removed 'inset-0' and 'overflow-hidden' to prevent the parent div from prematurely bounding the textarea to the screen width.
     <div className="absolute overflow-visible pointer-events-none z-50" style={{ left: 0, top: 0, width: '100%', height: '100%' }}>
       <textarea
         ref={textAreaRef}
         value={textContent}
         onChange={(e) => {
-          // ERROR HANDLING: Catch potential state update failures to prevent full editor crashes
           try {
             state.updateLayer(layer.id, { text: e.target.value } as any, false);
           } catch (err) {
@@ -83,7 +143,7 @@ export default function TextOverlay({ state, canvasEl }: TextOverlayProps) {
           }
         }}
         onFocus={() => {
-          // MOBILE VIEWPORT FIX: Prevent Safari from aggressively scrolling the page to align the absolute input
+          // MOBILE VIEWPORT FIX: Prevent Safari from aggressively scrolling
           const x = window.scrollX;
           const y = window.scrollY;
           window.scrollTo(x, y);
@@ -105,35 +165,34 @@ export default function TextOverlay({ state, canvasEl }: TextOverlayProps) {
         style={{
           left: `${activeTextLayer.x * cssScale}px`,
           top: `${activeTextLayer.y * cssScale}px`,
-          // FIX: Use 50% for vertical transform and origin to ensure the text remains perfectly centered 
-          // around layer.y even when it wraps to multiple lines, and account for the extra padding.
           transform: `translate(-50%, -50%) rotate(${activeTextLayer.rotation || 0}deg)`,
-          transformOrigin: `50% 50%`,
-          // FIX: The bounding box now handles internal padding on the canvas side. 
-          // Match the HTML textarea perfectly to the canvas bounding box width.
+          transformOrigin: '50% 50%',
           width: activeTextLayer.width ? `${activeTextLayer.width * cssScale}px` : 'max-content',
-          // FIX: Align the HTML maxWidth perfectly with the Canvas engine's Infinity rule
           maxWidth: 'none',
           minHeight: `${fallbackHeight + EXTRA_PADDING * 2}px`,
           padding: `${EXTRA_PADDING}px`,
           margin: 0,
           boxSizing: 'border-box',
-          // FIX: For auto-width text (no explicit width), force 'pre' to prevent the browser
-          // from wrapping the text when it hits the edge of the viewport.
           whiteSpace: activeTextLayer.width ? 'pre-wrap' : 'pre',
           wordWrap: activeTextLayer.width ? 'break-word' : 'normal',
           wordBreak: 'normal',
           color: activeTextLayer.color,
           fontFamily: `"${activeTextLayer.fontFamily}", sans-serif`,
-          fontWeight: activeTextLayer.isBold ? 'bold' : 'normal',
+          // Enterprise: use fontWeight (not just bold/normal)
+          fontWeight: fontWeight,
           fontStyle: activeTextLayer.isItalic ? 'italic' : 'normal',
           fontSize: `${activeTextLayer.fontSize * cssScale}px`,
           lineHeight: `${activeTextLayer.lineHeight}`,
           textAlign: activeTextLayer.textAlign as React.CSSProperties['textAlign'],
           letterSpacing: activeTextLayer.letterSpacing > 0 ? `${activeTextLayer.letterSpacing * cssScale}px` : 'normal',
-          WebkitTextStroke: activeTextLayer.strokeWidth > 0 ? `${activeTextLayer.strokeWidth * cssScale}px ${activeTextLayer.strokeColor}` : 'none',
-          textShadow: activeTextLayer.shadow 
-            ? `${activeTextLayer.shadow.x * cssScale}px ${activeTextLayer.shadow.y * cssScale}px ${activeTextLayer.shadow.blur * cssScale}px ${activeTextLayer.shadow.color}` 
+          // Enterprise: text transform + decoration
+          textTransform: textTransform as React.CSSProperties['textTransform'],
+          textDecoration: textDecoration === 'none' ? undefined : textDecoration,
+          WebkitTextStroke: activeTextLayer.strokeWidth > 0
+            ? `${activeTextLayer.strokeWidth * cssScale}px ${activeTextLayer.strokeColor}`
+            : 'none',
+          textShadow: activeTextLayer.shadow
+            ? `${activeTextLayer.shadow.x * cssScale}px ${activeTextLayer.shadow.y * cssScale}px ${activeTextLayer.shadow.blur * cssScale}px ${activeTextLayer.shadow.color}`
             : 'none',
         }}
       />

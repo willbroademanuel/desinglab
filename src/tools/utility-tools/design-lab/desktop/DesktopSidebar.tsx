@@ -12,6 +12,7 @@ import { ImageUploader } from '@tools/shared/components/ImageUploader';
 import { FONT_LIST, BG_SOLID_COLORS, BG_GRADIENTS } from '../constants';
 import { loadGoogleFont } from '../utils';
 import PropertyPanel from '../shared/PropertyPanel';
+import FontPicker from '../shared/FontPicker';
 import LayerPanel from '../shared/LayerPanel';
 import AssetBrowser from '../shared/AssetBrowser';
 import UniversalEditPanel from '../shared/UniversalEditPanel';
@@ -163,41 +164,60 @@ export default function DesktopSidebar({ state, onBgRemoval, isUniversalEditOpen
         {/* ── TEXT TAB ── */}
         {activeTab === 'text' && (
           <div className="space-y-4">
-            <button
-              onClick={state.addTextLayer}
-              className="w-full py-3 bg-primary-gold text-black font-bold rounded-xl hover:bg-yellow-500 active:scale-[0.98] transition-all shadow-sm"
-            >
-              + {t('designLab.addHeadingText') || 'Add Heading Text'}
-            </button>
 
+            {/* Style preset quick-add buttons */}
+            <div>
+              <h4 className="text-[10px] font-bold uppercase tracking-wider text-[color:var(--text-secondary)] mb-2">Add Text</h4>
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  onClick={state.addHeadingLayer}
+                  className="flex flex-col items-start gap-0.5 px-3 py-2.5 bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] hover:border-primary-gold rounded-xl transition-all"
+                >
+                  <span className="text-base font-black text-[color:var(--text-primary)] leading-none">Heading</span>
+                  <span className="text-[9px] text-[color:var(--text-tertiary)] uppercase tracking-wider">Montserrat · 800</span>
+                </button>
+                <button
+                  onClick={state.addSubheadingLayer}
+                  className="flex flex-col items-start gap-0.5 px-3 py-2.5 bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] hover:border-primary-gold rounded-xl transition-all"
+                >
+                  <span className="text-sm font-semibold text-[color:var(--text-primary)] leading-none">Subheading</span>
+                  <span className="text-[9px] text-[color:var(--text-tertiary)] uppercase tracking-wider">Poppins · 600</span>
+                </button>
+                <button
+                  onClick={state.addBodyTextLayer}
+                  className="flex flex-col items-start gap-0.5 px-3 py-2.5 bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] hover:border-primary-gold rounded-xl transition-all"
+                >
+                  <span className="text-xs font-normal text-[color:var(--text-primary)] leading-none">Body text</span>
+                  <span className="text-[9px] text-[color:var(--text-tertiary)] uppercase tracking-wider">Inter · 400</span>
+                </button>
+                <button
+                  onClick={state.addCaptionLayer}
+                  className="flex flex-col items-start gap-0.5 px-3 py-2.5 bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] hover:border-primary-gold rounded-xl transition-all"
+                >
+                  <span className="text-[10px] font-light tracking-widest text-[color:var(--text-primary)] leading-none uppercase">CAPTION</span>
+                  <span className="text-[9px] text-[color:var(--text-tertiary)] uppercase tracking-wider">Inter · 300</span>
+                </button>
+              </div>
+              <button
+                onClick={state.addTextLayer}
+                className="w-full mt-1.5 py-2.5 bg-[color:var(--surface-2)] border border-dashed border-[color:var(--border-subtle)] hover:border-primary-gold text-[color:var(--text-secondary)] font-semibold rounded-xl transition-all text-sm"
+              >
+                + Add Plain Text
+              </button>
+            </div>
+
+            {/* Font picker — shown when a text layer is selected */}
             {state.activeLayer?.type === 'text' && (
               <>
                 <div className="space-y-2">
-                  <h4 className="text-[10px] font-bold uppercase tracking-wider text-[color:var(--text-secondary)]">{t('designLab.fontFamily') || 'Font Family'}</h4>
-                  <input
-                    type="text"
-                    placeholder={t('designLab.searchFonts') || "Search fonts..."}
-                    value={fontSearch}
-                    onChange={e => setFontSearch(e.target.value)}
-                    className="w-full bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] rounded-lg px-3 py-2 text-xs outline-none focus:border-primary-gold transition-colors"
+                  <h4 className="text-[10px] font-bold uppercase tracking-wider text-[color:var(--text-secondary)]">Font Family</h4>
+                  <FontPicker
+                    currentFont={(state.activeLayer as any).fontFamily || 'Inter'}
+                    currentWeight={(state.activeLayer as any).fontWeight ?? 400}
+                    onFontChange={(fontName) => state.updateLayer(state.activeLayer!.id, { fontFamily: fontName } as any)}
+                    onWeightChange={(weight) => state.updateLayer(state.activeLayer!.id, { fontWeight: weight, isBold: weight >= 700 } as any)}
+                    maxHeight={220}
                   />
-                  <div className="max-h-[200px] overflow-y-auto space-y-0.5 border border-[color:var(--border-subtle)] rounded-lg">
-                    {filteredFonts.map(f => {
-                      loadGoogleFont(f.name);
-                      const isActive = (state.activeLayer as any)?.fontFamily === f.name;
-                      return (
-                        <button
-                          key={f.name}
-                          onClick={() => state.updateLayer(state.activeLayer!.id, { fontFamily: f.name } as any)}
-                          className={`w-full text-left px-3 py-2 text-sm transition-colors ${isActive ? 'bg-primary-gold/10 text-primary-gold' : 'hover:bg-[color:var(--surface-2)] text-[color:var(--text-secondary)]'}`}
-                          style={{ fontFamily: `"${f.name}", sans-serif` }}
-                        >
-                          {f.name}
-                          <span className="text-[9px] ml-2 opacity-50">{f.category}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
                 </div>
                 <PropertyPanel state={state} />
               </>
