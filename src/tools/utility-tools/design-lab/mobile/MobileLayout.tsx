@@ -63,7 +63,7 @@ export default function MobileLayout({
   return (
     <ErrorBoundary fallbackMessage="The mobile editor layout encountered an error.">
       <div 
-        className="flex flex-col flex-1 h-full min-h-0 w-full gap-2 p-1 sm:p-2 relative -mt-3 pb-20"
+        className="flex flex-col flex-1 h-full min-h-0 w-full gap-2 p-2 pt-[calc(env(safe-area-inset-top)+8px)] relative pb-20"
         onPointerDown={(e) => {
           const target = e.target as HTMLElement;
           // Let CanvasRenderer handle its own canvas clicks
