@@ -29,7 +29,7 @@ export default function SettingsModal({ isOpen, onClose, userProfile }: Settings
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-[color:var(--border-subtle)] bg-[color:var(--surface-2)]">
           <h2 className="text-sm font-bold text-[color:var(--text-primary)]">
-            {t('designLab.settings' as any) || 'Settings'}
+            Settings
           </h2>
           <button
             onClick={onClose}
@@ -66,9 +66,6 @@ export default function SettingsModal({ isOpen, onClose, userProfile }: Settings
             <h3 className="text-base font-bold text-[color:var(--text-primary)]">
               {userProfile?.username || 'Guest User'}
             </h3>
-            <p className="text-xs text-[color:var(--text-tertiary)]">
-              {userProfile?.email || 'No email provided'}
-            </p>
           </div>
 
           <div className="mt-2 flex items-center gap-2 bg-[color:var(--surface-2)] px-4 py-2 rounded-xl border border-primary-gold/30">
@@ -77,7 +74,7 @@ export default function SettingsModal({ isOpen, onClose, userProfile }: Settings
               {userProfile?.credits?.toLocaleString() ?? 0}
             </span>
             <span className="text-xs font-semibold text-primary-gold uppercase tracking-wider">
-              {t('designLab.credits' as any) || 'Credits'}
+              CREDITS
             </span>
           </div>
         </div>
@@ -87,7 +84,7 @@ export default function SettingsModal({ isOpen, onClose, userProfile }: Settings
           <div className="flex items-center justify-between p-3 rounded-xl bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)]">
             <div className="flex items-center gap-3 text-[color:var(--text-secondary)]">
               <Moon className="w-4 h-4" />
-              <span className="text-sm font-semibold">{t('designLab.theme' as any) || 'Theme'}</span>
+              <span className="text-sm font-semibold">Theme</span>
             </div>
             <ThemeToggle />
           </div>
@@ -95,7 +92,7 @@ export default function SettingsModal({ isOpen, onClose, userProfile }: Settings
           <div className="flex items-center justify-between p-3 rounded-xl bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)]">
             <div className="flex items-center gap-3 text-[color:var(--text-secondary)]">
               <Globe className="w-4 h-4" />
-              <span className="text-sm font-semibold">{t('designLab.language' as any) || 'Language'}</span>
+              <span className="text-sm font-semibold">Language</span>
             </div>
             <LanguagePill />
           </div>
@@ -108,7 +105,7 @@ export default function SettingsModal({ isOpen, onClose, userProfile }: Settings
             className="flex items-center justify-center gap-2 w-full py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl font-bold transition-colors border border-red-500/20"
           >
             <LogOut className="w-4 h-4" />
-            <span>{t('designLab.logout' as any) || 'Log Out'}</span>
+            <span>Log Out</span>
           </Link>
         </div>
       </div>
