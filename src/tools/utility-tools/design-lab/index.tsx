@@ -37,7 +37,16 @@ export default function DesignLab({ userProfile }: DesignLabProps = {}) {
   const [zoom, setZoom] = useState(1);
   const [panX, setPanX] = useState(0);
   const [panY, setPanY] = useState(0);
-  const [showNewProject, setShowNewProject] = useState(true);
+  const [showNewProject, setShowNewProject] = useState(false);
+
+  // Initialize New Project screen only if there's no project loaded from DB
+  // Use a ref to ensure this only ever fires once when isInitialized flips to true
+  useEffect(() => {
+    if (state.isInitialized && !state.hasProject) {
+      setShowNewProject(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.isInitialized]);
   const [showExportModal, setShowExportModal] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
