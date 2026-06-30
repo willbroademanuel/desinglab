@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import {
   Undo2, Redo2, Download, Bold, Italic,
   AlignLeft, AlignCenter, AlignRight,
-  Crop, LogOut
+  Crop, UserRound
 } from 'lucide-react';
 import Link from 'next/link';
 import type { DesignLabState } from '../useDesignLab';
@@ -15,9 +15,10 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 interface MobileToolbarProps {
   state: DesignLabState;
   onExport: () => void;
+  onOpenSettings?: () => void;
 }
 
-export default function MobileToolbar({ state, onExport }: MobileToolbarProps) {
+export default function MobileToolbar({ state, onExport, onOpenSettings }: MobileToolbarProps) {
   const { t } = useTranslation();
   const [isCropping, setIsCropping] = useState(false);
   const activeLayer = state.activeLayer;
@@ -52,7 +53,7 @@ export default function MobileToolbar({ state, onExport }: MobileToolbarProps) {
 
           <div className="flex-1" />
 
-          {/* Right: Export and Logout */}
+          {/* Right: Export and User Settings */}
           <div className="flex items-center gap-2">
             <button
               onClick={onExport}
@@ -61,12 +62,13 @@ export default function MobileToolbar({ state, onExport }: MobileToolbarProps) {
               <Download className="w-4 h-4" />
               <span>{t('designLab.export') || 'Export'}</span>
             </button>
-            <Link
-              href="/m/logout"
-              className="flex h-10 items-center justify-center w-10 bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] text-[color:var(--text-secondary)] rounded-xl transition-all shrink-0"
+            <button
+              onClick={onOpenSettings}
+              className="flex h-10 items-center justify-center w-10 bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] hover:border-primary-gold hover:text-primary-gold text-[color:var(--text-secondary)] rounded-xl transition-all shrink-0"
+              title="User Settings"
             >
-              <LogOut className="w-4 h-4" />
-            </Link>
+              <UserRound className="w-4 h-4" />
+            </button>
           </div>
         </div>
 

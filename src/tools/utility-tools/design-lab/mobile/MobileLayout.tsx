@@ -24,6 +24,7 @@ interface MobileLayoutProps {
   showExportModal: boolean;
   setShowExportModal: (show: boolean) => void;
   handleBgRemoval: () => void;
+  onOpenSettings?: () => void;
 }
 
 export default function MobileLayout({ 
@@ -31,7 +32,8 @@ export default function MobileLayout({
   panX, panY, onPanChange,
   showNewProject, setShowNewProject,
   showExportModal, setShowExportModal,
-  handleBgRemoval 
+  handleBgRemoval,
+  onOpenSettings
 }: MobileLayoutProps) {
   const { t } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -81,6 +83,7 @@ export default function MobileLayout({
         <MobileToolbar 
           state={state} 
           onExport={() => setShowExportModal(true)} 
+          onOpenSettings={onOpenSettings}
         />
 
         {/* Canvas Area */}

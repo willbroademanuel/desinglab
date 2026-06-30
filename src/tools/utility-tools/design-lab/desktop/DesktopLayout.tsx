@@ -24,6 +24,7 @@ interface DesktopLayoutProps {
   showExportModal: boolean;
   setShowExportModal: (show: boolean) => void;
   handleBgRemoval: () => void;
+  onOpenSettings?: () => void;
 }
 
 export default function DesktopLayout({ 
@@ -31,7 +32,8 @@ export default function DesktopLayout({
   panX, panY, onPanChange,
   showNewProject, setShowNewProject,
   showExportModal, setShowExportModal,
-  handleBgRemoval 
+  handleBgRemoval,
+  onOpenSettings
 }: DesktopLayoutProps) {
   const { t } = useTranslation();
   const [isUniversalEditOpen, setIsUniversalEditOpen] = useState(false);
@@ -71,6 +73,7 @@ export default function DesktopLayout({
           isUniversalEditOpen={isUniversalEditOpen}
           setIsUniversalEditOpen={setIsUniversalEditOpen}
           isPillVisible={isPillVisible}
+          onOpenSettings={onOpenSettings}
         />
 
         {/* Main Content Area */}

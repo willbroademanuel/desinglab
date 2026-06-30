@@ -13,8 +13,20 @@ import { useTranslation } from '@/lib/i18n/useTranslation';
 
 import MobileLayout from './mobile/MobileLayout';
 import DesktopLayout from './desktop/DesktopLayout';
+import SettingsModal from './shared/SettingsModal';
 
-export default function DesignLab() {
+export interface UserProfile {
+  username: string;
+  avatar_url: string;
+  credits: number;
+  email: string;
+}
+
+interface DesignLabProps {
+  userProfile?: UserProfile;
+}
+
+export default function DesignLab({ userProfile }: DesignLabProps = {}) {
   const { t } = useTranslation();
   const state = useDesignLab();
   
@@ -27,6 +39,7 @@ export default function DesignLab() {
   const [panY, setPanY] = useState(0);
   const [showNewProject, setShowNewProject] = useState(true);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Global Keyboard Shortcuts
   useEffect(() => {
@@ -79,7 +92,33 @@ export default function DesignLab() {
   // ── Platform Routing ──
   if (isMobile) {
     return (
-      <MobileLayout 
+      <>
+        <MobileLayout 
+          state={state}
+          zoom={zoom}
+          onZoomChange={setZoom}
+          panX={panX}
+          panY={panY}
+          onPanChange={(x, y) => { setPanX(x); setPanY(y); }}
+          showNewProject={showNewProject}
+          setShowNewProject={setShowNewProject}
+          showExportModal={showExportModal}
+          setShowExportModal={setShowExportModal}
+          handleBgRemoval={handleBgRemoval}
+          onOpenSettings={() => setIsSettingsOpen(true)}
+        />
+        <SettingsModal 
+          isOpen={isSettingsOpen} 
+          onClose={() => setIsSettingsOpen(false)} 
+          userProfile={userProfile} 
+        />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <DesktopLayout 
         state={state}
         zoom={zoom}
         onZoomChange={setZoom}
@@ -91,24 +130,14 @@ export default function DesignLab() {
         showExportModal={showExportModal}
         setShowExportModal={setShowExportModal}
         handleBgRemoval={handleBgRemoval}
+        onOpenSettings={() => setIsSettingsOpen(true)}
       />
-    );
-  }
-
-  return (
-    <DesktopLayout 
-      state={state}
-      zoom={zoom}
-      onZoomChange={setZoom}
-      panX={panX}
-      panY={panY}
-      onPanChange={(x, y) => { setPanX(x); setPanY(y); }}
-      showNewProject={showNewProject}
-      setShowNewProject={setShowNewProject}
-      showExportModal={showExportModal}
-      setShowExportModal={setShowExportModal}
-      handleBgRemoval={handleBgRemoval}
-    />
+      <SettingsModal 
+        isOpen={isSettingsOpen} 
+        onClose={() => setIsSettingsOpen(false)} 
+        userProfile={userProfile} 
+      />
+    </>
   );
 }
 
