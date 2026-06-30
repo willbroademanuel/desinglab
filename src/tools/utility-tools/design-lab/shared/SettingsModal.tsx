@@ -24,10 +24,10 @@ export default function SettingsModal({ isOpen, onClose, userProfile }: Settings
   return (
     <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div 
-        className="w-full max-w-sm bg-[color:var(--surface-1)] border border-[color:var(--border-subtle)] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+        className="w-full max-w-sm bg-[color:var(--surface-1)]/80 backdrop-blur-2xl border border-[color:var(--border-subtle)] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[color:var(--border-subtle)] bg-[color:var(--surface-2)]">
+        <div className="flex items-center justify-between p-4 border-b border-[color:var(--border-subtle)]">
           <h2 className="text-sm font-bold text-[color:var(--text-primary)]">
             Settings
           </h2>
@@ -68,7 +68,7 @@ export default function SettingsModal({ isOpen, onClose, userProfile }: Settings
             </h3>
           </div>
 
-          <div className="mt-2 flex items-center gap-2 bg-[color:var(--surface-2)] px-4 py-2 rounded-xl border border-primary-gold/30">
+          <div className="mt-2 flex items-center gap-2 bg-[color:var(--surface-2)]/50 px-4 py-2 rounded-xl border border-primary-gold/30">
             <Coins className="w-4 h-4 text-primary-gold" />
             <span className="text-sm font-bold text-[color:var(--text-secondary)]">
               {userProfile?.credits?.toLocaleString() ?? 0}
@@ -81,7 +81,7 @@ export default function SettingsModal({ isOpen, onClose, userProfile }: Settings
 
         {/* App Settings */}
         <div className="p-4 flex flex-col gap-2 border-b border-[color:var(--border-subtle)]">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)]">
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[color:var(--surface-2)]/50 border border-[color:var(--border-subtle)] backdrop-blur-md">
             <div className="flex items-center gap-3 text-[color:var(--text-secondary)]">
               <Moon className="w-4 h-4" />
               <span className="text-sm font-semibold">Theme</span>
@@ -89,7 +89,7 @@ export default function SettingsModal({ isOpen, onClose, userProfile }: Settings
             <ThemeToggle />
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)]">
+          <div className="flex items-center justify-between p-3 rounded-xl bg-[color:var(--surface-2)]/50 border border-[color:var(--border-subtle)] backdrop-blur-md">
             <div className="flex items-center gap-3 text-[color:var(--text-secondary)]">
               <Globe className="w-4 h-4" />
               <span className="text-sm font-semibold">Language</span>
@@ -99,7 +99,7 @@ export default function SettingsModal({ isOpen, onClose, userProfile }: Settings
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 bg-[color:var(--surface-2)]">
+        <div className="p-4">
           <Link
             href="/m/logout"
             className="flex items-center justify-center gap-2 w-full py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl font-bold transition-colors border border-red-500/20"
