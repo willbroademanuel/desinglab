@@ -106,14 +106,14 @@ export default function DesktopSidebar({ state, onBgRemoval, isUniversalEditOpen
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id)}
-            className={`flex-1 py-1.5 flex flex-col items-center gap-0.5 rounded-md text-[9px] font-bold uppercase transition-all ${
+            title={t.label}
+            className={`flex-1 py-2 flex justify-center items-center rounded-md transition-all ${
               (activeTab === t.id && !isImageEditOpen) || (!activeTab && t.id === 'elements' && !isImageEditOpen)
                 ? 'bg-[color:var(--surface-1)] text-primary-gold shadow-sm'
                 : 'text-[color:var(--text-tertiary)] hover:text-[color:var(--text-secondary)]'
             }`}
           >
-            <t.icon className="w-3.5 h-3.5" />
-            {t.label}
+            <t.icon className="w-4 h-4" />
           </button>
         ))}
       </div>
