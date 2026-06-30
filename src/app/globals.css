@@ -1,0 +1,372 @@
+@import "tailwindcss";
+
+/* ══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — single source of truth for the entire app
+   ════════════════════════════════════════════════════════════ */
+
+/* Light Theme (Default & Explicit) */
+:root,
+html[data-theme='light'] {
+  color-scheme: light;
+  
+  --background:   #f9fafb;
+  --surface-1:    #ffffff;
+  --surface-2:    #f3f4f6;
+  --surface-3:    #e5e7eb;
+
+  --border-subtle:  #e5e7eb;
+  --border-default: #d1d5db;
+  --border-strong:  #94a3b8;
+
+  --text-primary:   #111827;
+  --text-secondary: #4b5563;
+  --text-tertiary:  #6b7280;
+
+  --foreground:    var(--text-primary);
+  --onyx:          var(--surface-1);
+  --onyx-border:   var(--border-default);
+
+  --gold-500:      #b8860b;
+  --gold-400:      #d4af37;
+  --gold-300:      #e8c84e;
+  --gold-glow:     rgba(184, 134, 11, 0.15);
+
+  --primary-gold:       var(--gold-500);
+  --primary-gold-light: var(--gold-400);
+
+  --shadow-selected: 0 0 0 3px rgba(184, 134, 11, 0.15), 0 8px 32px rgba(0, 0, 0, 0.12);
+
+  --cat-office:   #2563eb;
+  --cat-enhance:  #9333ea;
+  --cat-creative: #ea580c;
+  --cat-fashion:  #059669;
+
+  --error:   #dc2626;
+  --success: #16a34a;
+  --warning: #d97706;
+
+  /* Card Slide gradients */
+  --slide-templates-gradient: linear-gradient(to right, rgba(245, 158, 11, 0.08), var(--surface-1), rgba(245, 158, 11, 0.04));
+  --slide-designer-gradient:  linear-gradient(to right, rgba(59, 130, 246, 0.08), var(--surface-1), rgba(59, 130, 246, 0.04));
+  --slide-photo-gradient:     linear-gradient(to right, rgba(147, 51, 234, 0.08), var(--surface-1), rgba(147, 51, 234, 0.04));
+  --slide-text-gradient:      linear-gradient(to right, rgba(16, 185, 129, 0.08), var(--surface-1), rgba(16, 185, 129, 0.04));
+}
+
+/* Dark Theme */
+html[data-theme='dark'] {
+  color-scheme: dark;
+  
+  --background:   #080809;
+  --surface-1:    #111113;
+  --surface-2:    #18181b;
+  --surface-3:    #222226;
+
+  --border-subtle:  #1f1f24;
+  --border-default: #2a2a30;
+  --border-strong:  #3a3a44;
+
+  --text-primary:   #f2f2f3;
+  --text-secondary: #8b8b96;
+  --text-tertiary:  #52525c;
+
+  --foreground:    var(--text-primary);
+  --onyx:          var(--surface-1);
+  --onyx-border:   var(--border-default);
+
+  --gold-500:      #d4af37;
+  --gold-400:      #e8c84e;
+  --gold-300:      #f0dc8a;
+  --gold-glow:     rgba(212, 175, 55, 0.35);
+
+  --primary-gold:       var(--gold-500);
+  --primary-gold-light: var(--gold-300);
+
+  --shadow-selected: 0 0 0 3px rgba(212, 175, 55, 0.35), 0 8px 32px rgba(0, 0, 0, 0.6);
+
+  --cat-office:   #3b82f6;
+  --cat-enhance:  #a855f7;
+  --cat-creative: #f97316;
+  --cat-fashion:  #10b981;
+
+  --error:   #ef4444;
+  --success: #22c55e;
+  --warning: #f59e0b;
+
+  /* Card Slide gradients */
+  --slide-templates-gradient: linear-gradient(to right, #2e2b1d, var(--surface-1), rgba(212, 175, 55, 0.15));
+  --slide-designer-gradient:  linear-gradient(to right, #1b2b3a, var(--surface-1), rgba(59, 130, 246, 0.1));
+  --slide-photo-gradient:     linear-gradient(to right, #2d1b3a, var(--surface-1), rgba(147, 51, 234, 0.1));
+  --slide-text-gradient:      linear-gradient(to right, #1b3a2b, var(--surface-1), rgba(16, 185, 129, 0.1));
+}
+
+/* ── Tailwind v4 theme tokens ─────────────────────────────── */
+@theme {
+  --color-background:   var(--background);
+  --color-foreground:   var(--foreground);
+  --color-surface-1:    var(--surface-1);
+  --color-surface-2:    var(--surface-2);
+  --color-surface-3:    var(--surface-3);
+  --color-onyx:         var(--onyx);
+  --color-onyx-border:  var(--onyx-border);
+  --color-error:        var(--error);
+  --color-success:      var(--success);
+  --color-border-subtle:  var(--border-subtle);
+  --color-border-default: var(--border-default);
+  --color-border-strong:  var(--border-strong);
+  --color-primary-gold: var(--primary-gold);
+  --color-text-primary:   var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary:  var(--text-tertiary);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BASE
+   ════════════════════════════════════════════════════════════ */
+html {
+  height: 100%;
+  color-scheme: only light;
+}
+
+body {
+  background:  var(--background);
+  color:       var(--text-primary);
+  font-family: var(--font-inter), -apple-system, 'Segoe UI', Arial, sans-serif;
+  overflow-x:  hidden;
+  height:      100%;
+  -webkit-font-smoothing:  antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   UTILITIES
+   ════════════════════════════════════════════════════════════ */
+@layer utilities {
+
+  /* ── Text gradients ─────────────────────────────────────── */
+  .text-gradient-gold {
+    background-image: linear-gradient(135deg, var(--gold-300), var(--gold-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Scrollbar hidden ───────────────────────────────────── */
+  .scrollbar-hidden {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-hidden::-webkit-scrollbar { display: none; }
+
+  /* ── iOS / Android safe area ───────────────────────────── */
+  .safe-area-top    { padding-top:    env(safe-area-inset-top,    0px); }
+  .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+  /* ── Glass panel ────────────────────────────────────────── */
+  .glass {
+    background:    rgba(17, 17, 19, 0.7);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border: 1px solid var(--border-subtle);
+  }
+
+  /* ── Shimmer animation (skeleton loader) ────────────────── */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--surface-1) 25%,
+      var(--surface-2) 50%,
+      var(--surface-1) 75%
+    );
+    background-size: 400% 100%;
+    animation: shimmer-slide 1.6s ease-in-out infinite;
+  }
+
+  /* ── Dashed border animation (upload zone) ──────────────── */
+  .animate-border-dash {
+    animation: border-dash-spin 12s linear infinite;
+  }
+
+  /* ── Gold pulse ─────────────────────────────────────────── */
+  .animate-gold-queue {
+    animation: gold-queue-pulse 2s ease-in-out infinite;
+  }
+
+  /* ── Fade-in-up ─────────────────────────────────────────── */
+  .animate-fade-up {
+    animation: fade-up 0.35s ease both;
+  }
+
+  /* ── Floating ───────────────────────────────────────────── */
+  .animate-float {
+    animation: float 2.4s ease-in-out infinite;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   KEYFRAMES
+   ════════════════════════════════════════════════════════════ */
+@keyframes shimmer-slide {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+@keyframes border-dash-spin {
+  to { stroke-dashoffset: -100; }
+}
+
+@keyframes gold-queue-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(212, 175, 55, 0.25); opacity: 1; }
+  50%       { box-shadow: 0 0 22px rgba(212, 175, 55, 0.75); opacity: 0.88; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(100vw); }
+  100% { transform: translateX(-100%); }
+}
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+@keyframes shimmer-sweep {
+  from { transform: translateX(-100%) skewX(-12deg); }
+  to   { transform: translateX(250%) skewX(-12deg); }
+}
+
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modal-content-in {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PREMIUM SCROLLBAR
+   ════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background:    var(--border-default);
+  border-radius: 100px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--gold-500); }
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-default) transparent;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   GLOBAL TRANSITIONS — Only GPU-composited properties to avoid
+   paint storms on mobile. Individual components opt-in to
+   background-color/border-color/box-shadow transitions via their
+   own className (which they already do via Tailwind's transition-*).
+   ════════════════════════════════════════════════════════════ */
+button, a {
+  transition-property: transform, opacity;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Disable 300ms tap delay on all interactive elements on mobile */
+button, a, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TEMPLATE CARD HOVER OVERLAY
+   ════════════════════════════════════════════════════════════ */
+.template-card .card-overlay {
+  transform: translateY(100%);
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.template-card:hover .card-overlay {
+  transform: translateY(0);
+}
+.template-card:hover .card-image {
+  transform: scale(1.05);
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.template-card .card-image {
+  transition: transform 0.4s ease;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   ANNOUNCEMENT BANNER THEME CONFLICT RESOLUTIONS
+   Direct theme-binding to resolve OS preferences (prefers-color-scheme)
+   mismatching the web application theme state.
+   ════════════════════════════════════════════════════════════ */
+.announcement-banner-container {
+  background: linear-gradient(to right, rgba(245, 158, 11, 0.1), rgba(234, 179, 8, 0.1), rgba(245, 158, 11, 0.1));
+  background-color: rgba(254, 243, 199, 0.95) !important; /* Extremely high contrast light amber-50 background */
+  border-bottom: 1px solid rgba(245, 158, 11, 0.35) !important;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.05);
+}
+.announcement-banner-icon {
+  background-color: rgba(245, 158, 11, 0.15) !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  color: #b45309 !important; /* Premium deep solid amber-700 */
+}
+.announcement-banner-text {
+  color: #78350f !important; /* Deepest, highly legible contrast amber-900 */
+}
+.announcement-banner-close {
+  background-color: rgba(245, 158, 11, 0.1) !important;
+  border: 1px solid rgba(245, 158, 11, 0.25) !important;
+  color: #78350f !important;
+}
+.announcement-banner-close:hover {
+  background-color: rgba(245, 158, 11, 0.2) !important;
+  color: #451a03 !important;
+}
+
+/* Dark Mode Overrides driven explicitly by HTML data-theme attribute */
+html[data-theme='dark'] .announcement-banner-container {
+  background: linear-gradient(to right, rgba(245, 158, 11, 0.15), rgba(234, 179, 8, 0.15), rgba(245, 158, 11, 0.15)) !important;
+  background-color: transparent !important;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.35) !important;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.15);
+}
+html[data-theme='dark'] .announcement-banner-icon {
+  background-color: rgba(245, 158, 11, 0.2) !important;
+  border: 1px solid rgba(245, 158, 11, 0.3) !important;
+  color: #fbbf24 !important; /* amber-400 */
+}
+html[data-theme='dark'] .announcement-banner-text {
+  color: #fef3c7 !important; /* Legible warm white amber-100 */
+}
+html[data-theme='dark'] .announcement-banner-close {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #9ca3af !important;
+}
+html[data-theme='dark'] .announcement-banner-close:hover {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MOBILE HEADER DYNAMIC HOME BUTTON
+   Uses the modern :has() selector to conditionally show the Home 
+   button on mobile ONLY if the center portal is completely empty
+   (i.e. contains no actual element nodes like tools or Monica).
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  header:not(:has(#header-step-portal > *)) .can-show-on-mobile {
+    display: flex !important;
+  }
+}
