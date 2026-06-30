@@ -84,7 +84,7 @@ export default function DesignLab({ userProfile }: DesignLabProps = {}) {
   if (!state.isInitialized) {
     return (
       <div className="flex flex-col flex-1 h-full min-h-[60vh] w-full relative items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-gold"></div>
+        <div className="loader"></div>
       </div>
     );
   }

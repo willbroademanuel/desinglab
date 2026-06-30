@@ -99,35 +99,6 @@ export default function Loading() {
         .loading-exit-container {
           animation: scale-out-exit 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
         }
-        
-        /* New Custom Loader */
-        .loader {
-          width: 15px;
-          aspect-ratio: 1;
-          position: relative;
-        }
-        .loader::before,
-        .loader::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: 50%;
-          background: #D4AF37; /* Using primary gold */
-        }
-        .loader::before {
-          box-shadow: -25px 0 #D4AF37;
-          animation: l8-1 1s infinite linear;
-        }
-        .loader::after {
-          transform: rotate(0deg) translateX(25px);
-          animation: l8-2 1s infinite linear;
-        }
-        @keyframes l8-1 {
-            100% { transform: translateX(25px) }
-        }
-        @keyframes l8-2 {
-            100% { transform: rotate(-180deg) translateX(25px) }
-        }
       `}</style>
     </div>
   );
