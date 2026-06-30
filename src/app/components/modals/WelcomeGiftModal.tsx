@@ -167,7 +167,7 @@ export default function WelcomeGiftModal({ userId, creditsAmt, userName }: Welco
                   </motion.button>
 
                   <div className="mt-5 text-[10px] text-[color:var(--text-tertiary)] uppercase tracking-widest opacity-60">
-                    &copy; {new Date().getFullYear()} Pixtrend AI. All rights reserved.
+                    &copy; {new Date().getFullYear()} DesignLab AI. All rights reserved.
                   </div>
                 </div>
               </div>

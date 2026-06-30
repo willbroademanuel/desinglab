@@ -70,7 +70,7 @@ export async function initiatePasswordReset(formData: FormData) {
     return { error: 'Kosa la mfumo. SMS haiwezi kutumika sasa hivi.' };
   }
 
-  const messageText = `Badili nywila Pixtrend OTP: ${otpCode}. Inatumika kwa dakika 5. Usimpe mtu yeyote.\n\n Tembelea tovuti yetu kwa maelezo zaidi: https://watulab.com`;
+  const messageText = `Badili nywila DesignLab OTP: ${otpCode}. Inatumika kwa dakika 5. Usimpe mtu yeyote.\n\n Tembelea tovuti yetu kwa maelezo zaidi: https://watulab.com`;
   const reference = crypto.randomUUID();
 
   try {

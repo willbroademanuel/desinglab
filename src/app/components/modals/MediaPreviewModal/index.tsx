@@ -247,7 +247,7 @@ export default function MediaPreviewModal({
   // ── Download handler ───────────────────────────────────────
   const handleDownload = useCallback(() => {
     if (!currentItem?.url) return;
-    const name = currentItem.downloadName || `pixtrend-${isVideo ? 'video' : 'image'}-${Date.now()}`;
+    const name = currentItem.downloadName || `designlab-${isVideo ? 'video' : 'image'}-${Date.now()}`;
     trigger(currentItem.url, name, isVideo, 'modal-dl');
   }, [currentItem, isVideo, trigger]);
 

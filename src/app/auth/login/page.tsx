@@ -71,7 +71,7 @@ export default function LoginPage() {
 
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold tracking-tight text-gradient-gold">Welcome Back</h1>
-          <p className="text-[color:var(--text-secondary)] mt-2 text-sm">Sign in to Pixtrend.</p>
+          <p className="text-[color:var(--text-secondary)] mt-2 text-sm">Sign in to DesignLab.</p>
         </div>
 
         {serverError && (

@@ -1,4 +1,4 @@
-# Tool Anatomy Standard — Pixtrend
+# Tool Anatomy Standard — DesignLab
 
 > **Last updated**: 2026-06  
 > **Enforced by**: Code review. All new tools MUST follow this structure.

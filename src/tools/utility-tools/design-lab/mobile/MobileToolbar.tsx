@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import {
   Undo2, Redo2, Download, Bold, Italic,
   AlignLeft, AlignCenter, AlignRight,
-  Crop
+  Crop, LogOut
 } from 'lucide-react';
+import Link from 'next/link';
 import type { DesignLabState } from '../useDesignLab';
 import type { TextLayer, ImageLayer } from '../types';
 import { GlobalCropModal } from '@tools/shared/components/GlobalCropModal';
@@ -51,14 +52,22 @@ export default function MobileToolbar({ state, onExport }: MobileToolbarProps) {
 
           <div className="flex-1" />
 
-          {/* Right: Export */}
-          <button
-            onClick={onExport}
-            className="flex items-center gap-1.5 px-4 h-10 bg-primary-gold text-black text-[11px] font-bold rounded-xl active:scale-95 transition-transform shadow-sm shrink-0"
-          >
-            <Download className="w-4 h-4" />
-            <span>{t('designLab.export') || 'Export'}</span>
-          </button>
+          {/* Right: Export and Logout */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onExport}
+              className="flex items-center gap-1.5 px-4 h-10 bg-primary-gold text-black text-[11px] font-bold rounded-xl active:scale-95 transition-transform shadow-sm shrink-0"
+            >
+              <Download className="w-4 h-4" />
+              <span>{t('designLab.export') || 'Export'}</span>
+            </button>
+            <Link
+              href="/m/logout"
+              className="flex h-10 items-center justify-center w-10 bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] text-[color:var(--text-secondary)] rounded-xl transition-all shrink-0"
+            >
+              <LogOut className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
 
         {/* Secondary bar: Contextual layer actions — floats over canvas */}

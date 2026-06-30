@@ -24,7 +24,7 @@ export type ToolStatus =
 // ── Core Tool Definition ────────────────────────────────────────────────────
 
 /**
- * The canonical definition of a tool in the Pixtrend platform.
+ * The canonical definition of a tool in the DesignLab platform.
  * This is the single source of truth used by:
  *   - DesignerHubClient (to render the tools grid)
  *   - [slug]/page.tsx (to resolve which component to load)

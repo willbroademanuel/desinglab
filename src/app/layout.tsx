@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Pixtrend AI | WatuLab",
-  description: "Pixtrend AI — Premium AI image transformation platform",
+  title: "DesignLab AI | WatuLab",
+  description: "DesignLab AI — Premium AI image transformation platform",
 };
 
 export const viewport: Viewport = {

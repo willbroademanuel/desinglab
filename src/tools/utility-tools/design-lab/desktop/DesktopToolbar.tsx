@@ -5,8 +5,9 @@ import {
   Undo2, Redo2, Trash2, Download, Bold, Italic,
   AlignLeft, AlignCenter, AlignRight,
   MousePointer2, Hand, Crop, Settings2,
-  Lock, Unlock, Copy
+  Lock, Unlock, Copy, LogOut
 } from 'lucide-react';
+import Link from 'next/link';
 import type { DesignLabState } from '../useDesignLab';
 import type { TextLayer, ToolMode, ImageLayer } from '../types';
 import { GlobalCropModal } from '@tools/shared/components/GlobalCropModal';
@@ -210,8 +211,15 @@ export default function DesktopToolbar({ state, onExport, isUniversalEditOpen, s
         )}
       </div>
 
-      {/* Right section: delete, zoom, export */}
+      {/* Right section: delete, zoom, export, logout */}
       <div className="flex items-center justify-end gap-2 shrink-0">
+        <Link
+          href="/m/logout"
+          className="flex h-9 items-center justify-center w-9 bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] hover:border-red-500 hover:text-red-500 text-[color:var(--text-secondary)] rounded-lg transition-all shrink-0"
+          title="Logout"
+        >
+          <LogOut className="w-4 h-4" />
+        </Link>
         {confirmClear ? (
           <div className="flex items-center gap-1 bg-red-500/10 border border-red-500/30 px-2 h-9 rounded-lg animate-in slide-in-from-right-2">
             <span className="text-[10px] font-bold text-red-500 uppercase px-1">{t('imageFilters.clearWorkspace') ? 'Are you sure?' : 'Are you sure?'}</span>

@@ -72,7 +72,7 @@ export default function SignupPage() {
           <div className="space-y-6 text-center">
             <div className="bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] rounded-xl p-5 text-sm space-y-4 leading-relaxed text-[color:var(--text-secondary)]">
               <p>
-                Ndugu mtumiaji, usajili wa akaunti mpya kwenye mfumo wa Pixtrend umesitishwa kwa sasa kwa ajili ya matengenezo ya kiufundi.
+                Ndugu mtumiaji, usajili wa akaunti mpya kwenye mfumo wa DesignLab umesitishwa kwa sasa kwa ajili ya matengenezo ya kiufundi.
               </p>
               <div className="border-t border-[color:var(--border-subtle)] pt-3" />
               <p className="italic text-xs">
@@ -197,8 +197,8 @@ export default function SignupPage() {
       <div className="w-full max-w-md bg-onyx border border-onyx-border rounded-2xl p-8 shadow-2xl backdrop-blur-lg relative z-10">
 
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-gradient-gold">Jiunge na Pixtrend</h1>
-          <p className="text-[color:var(--text-secondary)] mt-2 text-xs">Tengeneza akaunti uweze kutumia Pixtrend.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-gradient-gold">Jiunge na DesignLab</h1>
+          <p className="text-[color:var(--text-secondary)] mt-2 text-xs">Tengeneza akaunti uweze kutumia DesignLab.</p>
         </div>
 
         {serverError && (
@@ -293,7 +293,7 @@ export default function SignupPage() {
                   <Link href="/privacy" className="text-primary-gold hover:underline" target="_blank">
                     Sera ya Faragha
                   </Link>{' '}
-                  ya Pixtrend.
+                  ya DesignLab.
                 </label>
               </div>
             </div>

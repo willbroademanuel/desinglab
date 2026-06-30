@@ -1,7 +1,7 @@
 // ==============================================================================
 // TOOL REGISTRY — Single Source of Truth
 // ==============================================================================
-// This is THE authoritative manifest of every tool in the Pixtrend platform.
+// This is THE authoritative manifest of every tool in the DesignLab platform.
 //
 // Rules for adding a new tool:
 //   1. Add an entry here

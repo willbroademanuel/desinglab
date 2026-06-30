@@ -59,7 +59,7 @@ export default function SignupBlockedModal() {
               
               <div className="bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] rounded-2xl p-4 text-[13px] text-gray-300 leading-relaxed text-left space-y-3">
                 <p>
-                  Ndugu mtumiaji, usajili wa akaunti mpya kwenye mfumo wa Pixtrend umesitishwa kwa sasa kwa ajili ya kufanya maboresho ya kiufundi.
+                  Ndugu mtumiaji, usajili wa akaunti mpya kwenye mfumo wa DesignLab umesitishwa kwa sasa kwa ajili ya kufanya maboresho ya kiufundi.
                 </p>
                 <div className="border-t border-white/5 pt-2" />
                 <p className="italic text-xs text-gray-400">

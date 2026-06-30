@@ -34,7 +34,7 @@ import { hasActiveModal, wasModalRecentlyClosed } from '@/lib/modalSignal';
    ════════════════════════════════════════════════════════════════ */
 
 // ── Sentinel marker for our history entries ──────────────────────
-const SENTINEL_KEY = '__pixtrend_nav_guard';
+const SENTINEL_KEY = '__designlab_nav_guard';
 
 // ── Types ────────────────────────────────────────────────────────
 interface OverlayEntry {

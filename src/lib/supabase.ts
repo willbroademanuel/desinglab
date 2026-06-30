@@ -4,7 +4,7 @@ import { createBrowserClient } from '@supabase/ssr'
 // SUPABASE CLIENT INITIALIZATION
 // ==========================================
 // This utility file handles securely connecting to our Supabase database.
-// Because Pixtrend uses Next.js 15 App Router, we need to carefully manage
+// Because DesignLab uses Next.js 15 App Router, we need to carefully manage
 // when we are calling Supabase on the "Client" vs the "Server".
 
 /**

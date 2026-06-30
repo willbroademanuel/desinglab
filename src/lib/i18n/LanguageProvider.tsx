@@ -3,7 +3,7 @@
 import React, { createContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { type Locale, type TranslationKey, translations, interpolate } from '@/locales';
 
-const STORAGE_KEY = 'pixtrend-lang';
+const STORAGE_KEY = 'designlab-lang';
 const DEFAULT_LOCALE: Locale = 'sw';
 
 interface LanguageContextValue {

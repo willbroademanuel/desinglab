@@ -1,7 +1,7 @@
 // ==============================================================================
 // UTILITIES
 // ==============================================================================
-// Contains client-side utilities and helpers for the Pixtrend app.
+// Contains client-side utilities and helpers for the DesignLab app.
 
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';

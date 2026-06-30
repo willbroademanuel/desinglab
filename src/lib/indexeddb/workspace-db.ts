@@ -21,7 +21,7 @@ export interface ToolResult {
   timestamp: number;
 }
 
-const TOOLS_DB_NAME = 'pixtrend_tools_db';
+const TOOLS_DB_NAME = 'designlab_tools_db';
 const TOOLS_DB_VERSION = 1;
 const TOOLS_STORE = 'results';
 
@@ -169,7 +169,7 @@ export async function clearAllResults(): Promise<boolean> {
 // ── Workspace (Canvas State) DB ────────────────────────────────────────────
 // Used by Design Lab and Inpaint to persist canvas state across sessions.
 
-const WORKSPACE_DB_NAME = 'pixtrend-designer-hub';
+const WORKSPACE_DB_NAME = 'designlab-designer-hub';
 const WORKSPACE_DB_VERSION = 1;
 const WORKSPACE_STORE_NAME = 'workspace';
 

@@ -57,7 +57,7 @@ export async function initiateSignup(formData: FormData) {
     .maybeSingle();
 
   if (existingPhoneProfile) {
-    return { error: 'Namba hii ya simu ilishasajiliwa Pixtrend.' };
+    return { error: 'Namba hii ya simu ilishasajiliwa DesignLab.' };
   }
 
   let username = rawUsername;
@@ -119,7 +119,7 @@ export async function initiateSignup(formData: FormData) {
     return { error: 'System configuration error. SMS cannot be sent right now.' };
   }
 
-  const messageText = `Karibu Pixtrend ,Namba ya uthibitisho (OTP): ${otpCode}. Usishiriki na mtu yeyote namba hii. Inafaa kutumika ndani ya dakika 5 tu, asante. \n\n Kama hukuomba OTP hii, tafadhali puuza ujumbe huu. \n Tembelea tovuti yetu kwa maelezo zaidi: https://watulab.com`;
+  const messageText = `Karibu DesignLab ,Namba ya uthibitisho (OTP): ${otpCode}. Usishiriki na mtu yeyote namba hii. Inafaa kutumika ndani ya dakika 5 tu, asante. \n\n Kama hukuomba OTP hii, tafadhali puuza ujumbe huu. \n Tembelea tovuti yetu kwa maelezo zaidi: https://watulab.com`;
   const reference = crypto.randomUUID();
 
   try {

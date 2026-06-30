@@ -59,7 +59,7 @@ export default function MaintenanceModal() {
               
               <div className="bg-[color:var(--surface-2)] border border-[color:var(--border-subtle)] rounded-2xl p-4 text-[13px] text-gray-300 leading-relaxed text-left space-y-3">
                 <p>
-                  Ndugu mtumiaji, baadhi ya mifumo ya Pixtrend ipo kwenye matengenezo ya muda mfupi. Tunafanya hivi ili kuongeza ufanisi wa kizazi cha picha. Tunatarajia kurudi hivi karibuni.
+                  Ndugu mtumiaji, baadhi ya mifumo ya DesignLab ipo kwenye matengenezo ya muda mfupi. Tunafanya hivi ili kuongeza ufanisi wa kizazi cha picha. Tunatarajia kurudi hivi karibuni.
                 </p>
                 <div className="border-t border-white/5 pt-2" />
                 <p className="italic text-xs text-gray-400">
